@@ -1,0 +1,10 @@
+import z from "zod";
+
+export const genreSchema = z.object({
+    name: z.string().min(1)
+}).strict();
+
+export const theaterSchema = z.object({
+    name: z.string().min(1),
+    city: z.string().min(1)
+}).strict();
