@@ -1,4 +1,4 @@
-import { Request, Response } from "express";
+import type { Request, Response } from "express";
 import { movieSchema } from "../utils/zodSchema";
 import Movie from "../models/Movie";
 import path from "node:path";

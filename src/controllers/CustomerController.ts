@@ -1,4 +1,4 @@
-import { Request, Response } from "express";
+import type { Request, Response } from "express";
 import User from "../models/User";
 import WalletTransaction from "../models/WalletTransaction";
 import Transaction from "../models/Transaction";

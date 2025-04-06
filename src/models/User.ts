@@ -4,28 +4,28 @@ import { getAssetUrl } from "../utils/helper";
 const userSchema = new mongoose.Schema({
     name: {
         type: String,
-        requred: true
+        required: true
     },
     email: {
         type: String,
-        requred: true
+        required: true
     },
     password: {
         type: String,
-        requred: true
+        required: true
     },
     photo: {
         type: String,
-        requred: true
+        required: true
     },
-    rule: {
+    role: {
         type: String,
         enum: ["admin", "customer"],
         default: "customer"
     },
 }, {
     virtuals: {
-        photuUrl: {
+        photoUrl: {
             get() {
                 return `${getAssetUrl('photos')}${this.photo}`
             }
