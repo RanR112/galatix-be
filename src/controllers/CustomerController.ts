@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import User from "../models/User";
 import WalletTransaction from "../models/WalletTransaction";
+import Transaction from "../models/Transaction";
 
 export const getCustomer = async (req: Request, res: Response) => {
     try {
@@ -31,6 +32,34 @@ export const getWalletTransactions = async (req: Request, res: Response) => {
                 select: "name"
             }
         })
+        return res.json({
+            data: transactions,
+            message: "Success get data",
+            status: "Success"
+        })
+    } catch (error) {
+        console.log(error)
+        return res.status(500).json({
+            message: "Failed to get data",
+            data: null,
+            status: "Failed"
+        })
+    }
+}
+
+export const getTransactions = async (req: Request, res: Response) => {
+    try {
+        const transactions = await Transaction.find().populate({
+            path: "user",
+            select: "name -_id"
+        }).populate({
+            path: "movie",
+            select: "title -_id"
+        }).populate({
+            path: "theater",
+            select: "name -_id"
+        })
+
         return res.json({
             data: transactions,
             message: "Success get data",
