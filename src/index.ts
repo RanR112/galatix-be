@@ -18,7 +18,7 @@ app.get("/", (req: Request, res: Response) => {
 	res.send("Express + TypeScript Server");
 });
 
-app.use('/api/auth/login', authRoutes);
+app.use('/api', authRoutes);
 app.use('/api/admin', adminRoutes);
 
 app.listen(port, () => {
