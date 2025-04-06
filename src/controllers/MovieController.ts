@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
-import Moive from "../models/Moive";
 import { movieSchema } from "../utils/zodSchema";
+import Movie from "../models/Movie";
 import path from "node:path";
 import fs from "node:fs";
 import Genre from "../models/Genre";
@@ -8,7 +8,7 @@ import Theater from "../models/Theater";
 
 export const getMovies = async (req: Request, res: Response) => {
     try {
-        const movies = await Moive.find().populate({
+        const movies = await Movie.find().populate({
             path: "genre",
             select: "name"
         }).populate({
@@ -18,6 +18,33 @@ export const getMovies = async (req: Request, res: Response) => {
 
         return res.json({
             data: movies,
+            message: "Success get data",
+            status: "Success"
+        })
+    } catch (error) {
+        console.log(error)
+        return res.status(500).json({
+            message: "Failed to get data",
+            data: null,
+            status: "Failed"
+        })
+    }
+}
+
+export const getMovieDetail = async (req: Request, res: Response) => {
+    try {
+        const {id} = req.params
+
+        const movie = await Movie.findById(id).populate({
+            path: "genre",
+            select: "name"
+        }).populate({
+            path: "theaters",
+            select: "name"
+        })
+
+        return res.json({
+            data: movie,
             message: "Success get data",
             status: "Success"
         })
@@ -61,7 +88,7 @@ export const createMovie = async (req: Request, res: Response) => {
             })
         }
 
-        const movie = new Moive({
+        const movie = new Movie({
             title: parse.data.title,
             genre: parse.data.genre,
             available: parse.data.available,
@@ -114,7 +141,7 @@ export const updateMovie = async (req: Request, res: Response) => {
             })
         }
 
-        const oldMovie = await Moive.findById(id)
+        const oldMovie = await Movie.findById(id)
 
         if (!oldMovie) {
             return res.status(400).json({
@@ -151,7 +178,7 @@ export const updateMovie = async (req: Request, res: Response) => {
             })
         }
 
-        await Moive.findByIdAndUpdate(oldMovie._id, {
+        await Movie.findByIdAndUpdate(oldMovie._id, {
             title: parse.data.title,
             genre: parse.data.genre,
             available: parse.data.available,
@@ -176,7 +203,7 @@ export const updateMovie = async (req: Request, res: Response) => {
             })
         }
 
-        const updatedMovie = await Moive.findById(id)
+        const updatedMovie = await Movie.findById(id)
 
         return res.json({
             message: "Success update data",
@@ -198,7 +225,7 @@ export const deleteMovie = async (req: Request, res: Response) => {
     try {
         const {id} = req.params
 
-        const movie = await Moive.findById(id)
+        const movie = await Movie.findById(id)
 
         if (!movie) {
             return res.status(400).json({
@@ -233,7 +260,7 @@ export const deleteMovie = async (req: Request, res: Response) => {
             })
         }
         
-        await Moive.findByIdAndDelete(id)
+        await Movie.findByIdAndDelete(id)
 
         return res.json({
             message: "Success delete data",
