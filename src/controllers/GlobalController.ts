@@ -1,6 +1,7 @@
 import type { Request, Response } from "express";
 import Movie from "../models/Movie";
 import Genre from "../models/Genre";
+import Transaction from "../models/Transaction";
 
 export const getMovies = async (req: Request, res: Response) => {
     try {
@@ -88,6 +89,39 @@ export const getMovieDetail = async (req: Request, res: Response) => {
             status: "Success"
         })
 
+    } catch (error) {
+        return res.status(500).json({
+            message: "Failed to get data",
+            data: null,
+            status: "Failed"
+        })
+    }
+}
+
+export const getAvailableSeats = async (req: Request, res: Response) => {
+    try {
+        const {movieId} = req.params
+        const {date} = req.query
+
+        const transaction = await Transaction.find({
+            date: date?.toString().replace("+", " "),
+            movie: movieId
+        }).select("seats").populate({
+            path: "seats",
+            select: "seat"
+        })
+
+        const seats = []
+
+        for (const seat of transaction) {
+            seats.push(...seat.seats)
+        }
+
+        return res.json({
+            data: seats,
+            message: "Success get data",
+            status: "Success"
+        })
     } catch (error) {
         return res.status(500).json({
             message: "Failed to get data",
