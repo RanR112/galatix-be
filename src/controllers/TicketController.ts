@@ -67,3 +67,69 @@ export const transactionTicket = async (req: CustomRequest, res: Response) => {
         });
     }
 }
+
+export const getOrders = async (req: CustomRequest, res: Response) => {
+    try {
+        const transaction = await Transaction.find({
+            user: req.user?.id
+        }).select("seats movie theater date status").populate({
+            path: "movie",
+            select: "thumbnail title genre -_id",
+            populate: {
+                path: "genre",
+                select: "name -_id"
+            }
+        }).populate({
+            path: "seats",
+            select: "seat -_id"
+        }).populate({
+            path: "theater",
+            select: "name city -_id"
+        })
+
+        return res.json({
+            status: "success",
+            data: transaction,
+            message: "Success get data"
+        })
+    } catch (error) {
+        return res.status(500).json({
+            message: "Failed to get data",
+            data: null,
+            status: "Failed",
+        });
+    }
+}
+
+export const getOrderDetail = async (req: CustomRequest, res: Response) => {
+    try {
+        const {id} =req.params
+
+        const transaction = await Transaction.findById(id).select("seats movie theater date status").populate({
+            path: "movie",
+            select: "thumbnail title genre -_id",
+            populate: {
+                path: "genre",
+                select: "name -_id"
+            }
+        }).populate({
+            path: "seats",
+            select: "seat -_id"
+        }).populate({
+            path: "theater",
+            select: "name city -_id"
+        })
+
+        return res.json({
+            status: "success",
+            data: transaction,
+            message: "Success get data"
+        })
+    } catch (error) {
+        return res.status(500).json({
+            message: "Failed to get data",
+            data: null,
+            status: "Failed",
+        });
+    }
+}
